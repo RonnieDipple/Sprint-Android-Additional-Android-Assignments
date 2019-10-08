@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Location Services</string>
+    <string name="title_item_detail">Item Detail</string>
+    <string name="contact_image">Contact Image</string>
+    <string name="title_activity_test_screen">TestScreen</string>
+    <string name="distance">%1$f Km away</string>
+    <string name="name_distance">%1$s, %2$f Km away</string>
+    <string name="refresh">Refresh</string>
+    <string name="title_activity_maps">Map</string>
+</resources>

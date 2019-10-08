@@ -84,13 +84,17 @@ class ItemListActivity : AppCompatActivity() {
 
         var jsonPlaceHolderApi: JsonPlaceHolderApi = JsonPlaceHolderApi.Factory.create()
 
+        //basically what happens when you click on the list recyclerview
         private val itemOnClickListener = View.OnClickListener { view ->
             val item = view.tag as Contact
             if (twoPane) {
 
                 val fragment = ItemDetailFragment().apply {
+                    //TODO Bundle, Nice way to create a bundle
                     arguments = Bundle().apply {
                         // TODO: S09M02-8a Use Serializable to pass the Contact
+                        putSerializable(ItemDetailFragment.ARG_ITEM_ID, item)
+
                     }
                 }
                 parentActivity.supportFragmentManager

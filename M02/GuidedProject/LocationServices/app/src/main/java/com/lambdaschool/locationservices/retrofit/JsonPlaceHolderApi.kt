@@ -16,6 +16,7 @@ interface JsonPlaceHolderApi {
     @GET("api/")
     fun getContacts(
         @Query("format") format: String = "json",
+        @Query("inc") inc: String = "name,email,phone,picture,location",
         @Query("results") results: Int
     ): Call<ContactResults>
 

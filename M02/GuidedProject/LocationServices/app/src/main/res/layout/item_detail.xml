@@ -7,6 +7,17 @@
 
     <!-- TODO: S09M02-3 get map fragment from maps activity layout and move to where you want it, then adjust the layouts to fit how you want them to-->
 
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bot_item_detail"
+        tools:context=".MapsActivity" />
+
     <TextView
         android:id="@+id/bot_item_detail"
         style="?android:attr/textAppearanceMedium"

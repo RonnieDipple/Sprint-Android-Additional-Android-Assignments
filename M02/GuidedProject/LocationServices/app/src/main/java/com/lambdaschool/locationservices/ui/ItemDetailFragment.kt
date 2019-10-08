@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.lambdaschool.locationservices.model.Contact
 import kotlinx.android.synthetic.main.activity_item_detail.*
 import kotlinx.android.synthetic.main.item_detail.*
 import kotlinx.android.synthetic.main.item_detail.view.*
+import okhttp3.internal.http2.Http2Reader
 
 /**
  * A fragment representing a single Item detail screen.
@@ -36,6 +38,7 @@ import kotlinx.android.synthetic.main.item_detail.view.*
  */
 class ItemDetailFragment : Fragment(), OnMapReadyCallback {
     // TODO: S09M02-4a Add map variable
+    var mMap: GoogleMap? = null
 
     private var twoPane: Boolean = false
 
@@ -52,6 +55,8 @@ class ItemDetailFragment : Fragment(), OnMapReadyCallback {
                 // Load the content specified by the fragment
                 // arguments.
                 // TODO: S09M02-8c get Serializable
+                // TODO this get's the serializable out, we are inside the bundle, using it as reference to the bundle
+                item = it.getSerializable(ItemDetailFragment.ARG_ITEM_ID) as Contact
 
                 if (activity is ItemDetailActivity) {
                     // single-pane (phone)
@@ -89,7 +94,11 @@ class ItemDetailFragment : Fragment(), OnMapReadyCallback {
 
         // TODO: S09M02-4b copy code from generated maps activity into the activity where you want it to live
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        val mapFragment = childFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
+        getCurrentLocation()
         return rootView
     }
 
@@ -103,10 +112,32 @@ class ItemDetailFragment : Fragment(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         // TODO: S09M02-4c additional copied code
+        mMap = googleMap
+
+        //TODO part1.basically doing the same thing as the list except you are setting up your own location
+        val lat = item?.location?.coordinates?.latitude?: 0.0
+        val long = item?.location?.coordinates?.longitude?: 0.0
+        val city = item?.location?.city?: "Unknown city"
+        /////
 
         // Using known world locations, since lat/lng from API call is random (and usually in the middle of the Pacific...)
+        val location = WORLD_LOCS[7] //or val location = WORLD_LOCS.random() to get a random selection from list}
+        //TODO part2.basically doing the same thing as the list except you are setting up your own location
+        //can replace location down below with latLng to get it working
+        val latLng = LatLng(lat, long)
+        /////
 
         // TODO: S09M02-9 use location data to move the camera and place a pin
+        //could replace location with the LatLong
+        val handler = Handler()
+
+        //handler creates a nice animation in when someone is pinpointed on the map
+        handler.postDelayed({
+
+            googleMap.addMarker(MarkerOptions().position(location).title("Marker in $city"))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(location))
+        }, 2000)
+
     }
 
     private fun getCurrentLocation() {

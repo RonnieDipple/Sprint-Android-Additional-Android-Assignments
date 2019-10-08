@@ -36,8 +36,15 @@ class ItemDetailActivity : AppCompatActivity() {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             val fragment = ItemDetailFragment().apply {
+                //TODO Bundle, Nice way to create a bundle
+
+                //What we are doing here is from the ItemListActivity passing the item as a serializable
+                //it then goes to the DetailsActivity, we will then pass it as a serializable to
+                // the fragment itself
                 arguments = Bundle().apply {
                     // TODO: S09M02-8b put Serializable
+                    putSerializable(ItemDetailFragment.ARG_ITEM_ID,
+                        intent.getSerializableExtra(ItemDetailFragment.ARG_ITEM_ID))
                 }
             }
 

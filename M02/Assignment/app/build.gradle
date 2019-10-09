@@ -22,6 +22,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            buildConfigField 'String', "api_key", MY_MAPS_API_KEY
+            resValue 'string', "api_key", MY_MAPS_API_KEY
+
+        }
+
+        debug{
+            buildConfigField 'String', "api_key", MY_MAPS_API_KEY
+            resValue 'string', "api_key", MY_MAPS_API_KEY
         }
     }
     testOptions {

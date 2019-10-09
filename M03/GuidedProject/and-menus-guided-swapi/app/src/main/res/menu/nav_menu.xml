@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--TODO 4: define menu-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<item android:title="Category">-->
+        <group android:checkableBehavior="single">
+            <item
+                android:checkable="true"
+                android:id="@+id/nav_category_people"
+                android:title="People" />
+            <item
+                android:checkable="true"
+                android:id="@+id/nav_category_planets"
+                android:title="Planets" />
+            <item
+                android:checkable="true"
+                android:id="@+id/nav_category_starships"
+                android:title="StarShips" />
+        </group>
+    <!--</item>-->
+</menu>

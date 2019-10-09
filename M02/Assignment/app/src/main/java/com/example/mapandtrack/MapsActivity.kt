@@ -6,14 +6,18 @@ import androidx.core.content.ContextCompat
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.location.Location
+import android.os.Build
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.activity_maps.*
 
 /*## Overview
 Build an app which allows users to place tags on a map and track their current location.
@@ -37,10 +41,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     private lateinit var mMap: GoogleMap
+    private lateinit var currentLocation: Location
+    private  val FINE_LOCATION_REQUEST_CODE = 5
 
-    companion object{
-        private const val FINE_LOCATION_REQUEST_CODE = 5
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +52,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        button_location.isEnabled = false
+        button_pinpoint.isEnabled = false
+
+        getCurrentLocation()
     }
 
     /**
@@ -62,15 +70,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
 
 
-    private fun getCurrentLocation(){
-        //checks permission
-        if (ContextCompat.checkSelfPermission(this!!, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
-            //request the permission
-            ActivityCompat.requestPermissions(Activity()!!, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), FINE_LOCATION_REQUEST_CODE)
-        }else{
-            permissionDenied()
-        }
-    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -80,12 +80,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //checks the correct permissions have been granted,
         if(requestCode == FINE_LOCATION_REQUEST_CODE) {
-            if(permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                getCurrentLocation()
+            if (permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLocation()
             }
 
-        }else{
-            permissionDenied()
         }
     }
 
@@ -94,12 +92,52 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+
+        button_location.setOnClickListener {
+            var latLng = LatLng(currentLocation.latitude, currentLocation.longitude)
+            // moves the camera
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+        }
+
+        button_pinpoint.setOnClickListener {
+            var latLng = LatLng(currentLocation.latitude, currentLocation.longitude)
+            // Adds a marker
+            mMap.addMarker(MarkerOptions().position(latLng).title("Marker ??"))
+
+        }
     }
 
+    private fun getLocation() {
+        var currentLocationResult: Location? = null
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+
+        val locationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        locationProviderClient.lastLocation.addOnSuccessListener { location ->
+            currentLocationResult = location
+            if (currentLocationResult != null) {
+                currentLocation = currentLocationResult as Location
+              button_location.isEnabled = true
+                button_pinpoint.isEnabled = true
+            } else {
+               permissionDenied()
+            }
+        }
+
+    }
+
+    private fun getCurrentLocation(){
+        //checks permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+            //request the permission
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), FINE_LOCATION_REQUEST_CODE)
+        }else{
+            getLocation()
+        }
+    }}
 
     private fun permissionDenied(){
         Toast.makeText(this,"Location Permission Denied", Toast.LENGTH_LONG).show()

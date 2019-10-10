@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav1"
+            android:checkable="true"
+            android:title="Nav 1"
+            android:icon="@drawable/abc_vector_test"/>
+
+        <item
+            android:id="@+id/nav2"
+            android:checkable="true"
+            android:title="Nav 2"
+            android:icon="@drawable/abc_vector_test"/>
+
+        <item
+            android:id="@+id/nav3"
+            android:checkable="true"
+            android:title="Nav 3"
+            android:icon="@drawable/abc_vector_test"/>
+
+
+
+
+
+
+
+    </group>
+
+</menu>
